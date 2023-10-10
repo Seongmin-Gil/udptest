@@ -13,6 +13,6 @@ public struct ToServerPacket
 [Serializable]
 public struct ToClientPacket
 {
-    [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 7)]
-    public bool m_StringlVariable;
+    [MarshalAs(UnmanagedType.Bool, SizeConst = 7)]
+    public bool m_BoolVariable;
 }

@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     public Toggle[] inputMainBurner;
     public Text ipAddress;
     public Text port;
+    public Text sendPort;
     public GameObject updClient;
     public ToServerPacket m_SendPacket = new ToServerPacket();
 
@@ -27,14 +28,15 @@ public class GameManager : MonoBehaviour
 //Start Btn 
     public void TestingStart()
     {
-        Client m_upd = updClient.GetComponent<Client>();
-        m_upd.m_Ip = ipAddress.text;
-        m_upd.m_Port = int.Parse(port.text);
+        UDPClient m_upd = updClient.GetComponent<UDPClient>();
+        m_upd.serverIP = ipAddress.text;
+        m_upd.port = int.Parse(port.text);
+        m_upd.sendPort = int.Parse(port.text);
         m_SendPacket.m_StringlVariable = PackingData();
         ToServerPacket sendPacket = m_SendPacket;
         m_upd.Send(sendPacket);
         sendData = "";
-        m_upd.testing = true;
+        // m_upd.testing = true;
     }
 
 //Packing the Send Data to one string 
@@ -45,7 +47,6 @@ public class GameManager : MonoBehaviour
         ConvertString(inputAlarm[0].isOn);
         ConvertString(inputPilotBurner[0].isOn);
         ConvertString(inputMainBurner[0].isOn);
-        Debug.Log("dd" + sendData);
         return sendData;   
     }
 

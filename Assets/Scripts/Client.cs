@@ -79,7 +79,7 @@ public class Client : MonoBehaviour
 
     void DoReceivePacket()
     {
-        Debug.LogFormat($"StringlVariable = {m_ReceivePacket.m_StringlVariable}");
+        Debug.LogFormat($"StringlVariable = {m_ReceivePacket.m_BoolVariable}");
     }
 
     void CloseClient()
