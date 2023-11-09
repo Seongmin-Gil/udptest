@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.Sockets;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,51 +13,62 @@ public class GameManager : MonoBehaviour
     public Toggle[] inputPilotBurner;
     public Toggle[] inputMainBurner;
     public Text ipAddress;
-    public Text port;
+    public Text receivePort;
     public Text sendPort;
     public GameObject updClient;
-    public ToServerPacket m_SendPacket = new ToServerPacket();
-
-    private string sendData;
+    public GameObject udpReceiver;
+    public SendPacket sendPacket;
+    public GameObject outputResult;
 
     // Start is called before the first frame update
     void Start()
     {
-        sendData = "";
+        Application.targetFrameRate = 60;
+        sendPacket = new SendPacket();
         InitialToggle();
+    }
+
+    public void ReceiveResult(List<bool> bools)
+    {
+        Output outCtrl = outputResult.GetComponent<Output>();
+        outCtrl.OutputHandle(bools);
     }
 
 //Start Btn 
     public void TestingStart()
     {
         UDPClient m_upd = updClient.GetComponent<UDPClient>();
+        Server r_udp = udpReceiver.GetComponent<Server>();
         m_upd.serverIP = ipAddress.text;
-        m_upd.port = int.Parse(port.text);
-        m_upd.sendPort = int.Parse(port.text);
-        m_SendPacket.m_StringlVariable = PackingData();
-        ToServerPacket sendPacket = m_SendPacket;
+        r_udp.port = int.Parse(receivePort.text);
+        m_upd.sendPort = int.Parse(sendPort.text);
+        byte[] dataArray = PackingData();
+        sendPacket.Data = dataArray;
         m_upd.Send(sendPacket);
-        sendData = "";
-        // m_upd.testing = true;
+        r_udp.StartReceive();
     }
 
 //Packing the Send Data to one string 
-    public string PackingData()
+    public byte[] PackingData()
     {
-        ConvertString(inputMain[0].isOn);
-        ConvertString(inputEmergency[0].isOn);
-        ConvertString(inputAlarm[0].isOn);
-        ConvertString(inputPilotBurner[0].isOn);
-        ConvertString(inputMainBurner[0].isOn);
-        return sendData;   
+        byte[] byteArray = new byte[5];
+        bool[] bools = new bool[5];
+        bools[0] = inputMain[0].isOn;
+        bools[1] = inputEmergency[0].isOn;
+        bools[2] = inputAlarm[0].isOn;
+        bools[3] = inputPilotBurner[0].isOn;
+        bools[4] = inputMainBurner[0].isOn;
+        for(int i = 0;i < bools.Length; i++)
+        {
+            byteArray[i] = ConvertByte(bools[i]);
+        }
+        return byteArray;   
     }
 
-//Input Data Conver On = 1 , Off = 0
-    public string ConvertString(bool state)
+    public byte ConvertByte(bool boolean)
     {
-        string word = state ? "1" : "0" ;
-        sendData += word;
-        return sendData;
+        byte result = Convert.ToByte(boolean);
+        return result;
     }
 
 //Initial Toggle Setting
