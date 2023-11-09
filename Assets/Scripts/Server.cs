@@ -35,13 +35,16 @@ public class Server : MonoBehaviour
                 IAsyncResult result = receiver.BeginReceive(ReceiveCallback, null);
                 // Wait until data is received or timeout (adjust timeout as needed)
                 // Process any other logic while waiting for data
-                gameManager.ReceiveResult(bools);
+                if(result != null)
+                {
+                    gameManager.ReceiveResult(bools);
+                }
             }
             catch (Exception e)
             {
                 Debug.LogError(e.ToString());
             }
-            yield return new WaitForSeconds(0.01f);
+            yield return null;
         }
     }
 

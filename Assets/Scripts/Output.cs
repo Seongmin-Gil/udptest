@@ -48,20 +48,21 @@ public class Output : MonoBehaviour
             ChangeValue(bools[5], outBurner);
             ChangeValue(bools[6], outResult);
         }
-        else
-        {
-            Debug.Log("error result Num:" + bools.Count);
-        }
+        //else
+        //{
+        //    Debug.Log("error result Num:" + bools.Count);
+        //}
+        Debug.Log("check");
     }
 
     public void ChangeValue(bool result, Toggle[] toggles)
     {
-        if (result)
+        if (result == true)
         {
             toggles[0].isOn = true;
         } else
         {
-            toggles[0].isOn = false;
+            toggles[1].isOn = true;
         }
     }
 }
